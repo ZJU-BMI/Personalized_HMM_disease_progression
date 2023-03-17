@@ -1,0 +1,83 @@
+#install.packages('pacman')
+library(pacman)
+pacman::p_load(
+  mice, 
+  naniar,
+  lattice,
+  MASS,
+  nnet,
+  VIM,
+  dplyr,
+  shipunov,
+  gridExtra) 
+
+#0.preparation
+df <- read.csv('step1_merge_data.csv')
+res <- miss_var_summary(df)
+df$PTGENDER <- ifelse(df$PTGENDER == 'Female', 0, 1) 
+df$AGE <- df$AGE + round(df$Month / 12, digits = 1) 
+
+#1.create data
+features <- df[, 8:32]
+names(features)
+str(features)
+features_res <- miss_var_summary(features) 
+
+#2.Check missing values
+shipunov::Missing.map(features)
+md.pattern(features)
+md.pairs(features)
+
+#3.Visualizing missing values
+aggr(features,plot = T, sortVars=T, only.miss=T)
+matrixplot(features)
+marginplot(features[c(17,19)])
+
+#4.multiple imputation method
+features <- select(features,-ICV)
+methods(mice)
+imputed_Data <- mice(features, m=5,maxit=50,method='rf',seed=500)
+
+#5.View filling results
+summary(imputed_Data)
+imputed_Data$method
+imputed_Data$imp
+
+#6.Visualize filling results
+stripplot(imputed_Data)
+xyplot(imputed_Data,Hippocampus ~ Entorhinal|.imp)  #观察5组数据的填充情况
+densityplot(imputed_Data)
+
+
+#7.Analyze imputation results and optimize models
+names(imputed_Data$data)
+fit <- with(imputed_Data,
+            lm(Hippocampus~AGE+PTGENDER))
+summary(fit)       
+
+#8.model assessment
+pooled=pool(fit)
+pooled
+summary(pooled)
+pool.r.squared(fit)  
+
+#9.Final filling result (choose the best fitting result)
+complete_Data <- complete(imputed_Data,5)
+complete_Data
+write.csv(complete_Data, 'step2_complete_Data.csv', row.names = T)
+
+#10.output result
+#write.csv(complete_Data, 'mci_complete_Data.csv', row.names = F)
+df <- read.csv('step1_merge_data.csv')
+ICV <- df$ICV
+subject_id <- df$RID
+time <- df$Month
+label <- df$DX
+df$PTGENDER <- ifelse(df$PTGENDER == 'Female', 0, 1) 
+gender <- df$PTGENDER
+imageid <- df$IMAGEUID
+DX_bl <- df$DX_bl
+
+df4 <- cbind(subject_id,time,imageid,DX_bl,label,gender,complete_Data,ICV)
+write.csv(df4, 'step2_merge_data_original.csv', row.names = T)
+

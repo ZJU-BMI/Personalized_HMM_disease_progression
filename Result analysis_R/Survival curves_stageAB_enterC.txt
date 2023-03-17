@@ -1,0 +1,161 @@
+library(survival)
+library(survminer)
+library(KMunicate)
+library(ComparisonSurv)
+library(dplyr)
+######################################################################
+###A and B stages enter C stage  
+data<- read.csv('AB_enterC_KM.csv',stringsAsFactors = T,check.names=FALSE)
+str(data)
+data$state <- factor(data$state)
+Surv(data$time,data$label)
+fit <- survfit(Surv(time, label) ~  state, data=data)
+head(fit)
+ggsurvplot(fit, data = data,
+           break.time.by = 12, 
+           conf.int = TRUE, 
+           # risk.table = TRUE, 
+           pval = TRUE, 
+           #pval.method = TRUE, 
+           conf.int.alpha = 0.3,
+           #title = "Survival curves of two stages enter C-I", 
+           censor = FALSE,
+           fun = "pct", 
+           size = 0.8,  
+           linetype = c("solid",'solid'),   
+           palette = c("#f08080","#9f79ee","#f08080","#9f79ee"), 
+           legend = c(0.1, 0.4),
+           legend.title = "", 
+           legend.labs = c("A stage","B stage"), 
+           title = "Participants converting from either stages A or B to stage C", 
+           font.main = c(12, "bold"), 
+           xlab = "Time(Month)", 
+           font.x = c(14, "bold"),
+           ylab = "Survival Probability", 
+           font.y = c(14, "bold"),
+           surv.median.line = "hv",
+           risk.table = T, 
+           tables.height = 0.2, 
+           fontsize = 4,
+           risk.table.title = "No. at Risk",
+           risk.table.y.text.col = FALSE,
+           tables.theme = theme_cleantable()
+) 
+######################################################################
+
+
+######################################################################
+library(survival)
+library(survminer)
+library(KMunicate)
+library(ComparisonSurv)
+library(dplyr)
+df <- read.csv('AB_enterC_KM.csv',stringsAsFactors = T,check.names=FALSE)
+str(df)
+#data$staus <- factor(data$staus)
+#data$label_2 <- factor(data$label_2)
+#install.packages("survminer")
+#install.packages("KMunicate")
+#install.packages("ComparisonSurv")
+#install.packages("dplyr")
+library(survminer)
+library(survival)
+df$ABETA <- ifelse(df$ABETA == '>1700', 1700, df$ABETA)
+df$PTAU <- ifelse(df$PTAU == '<8', 8, df$PTAU)
+# abeta < 1025 A+
+df$ABETA <- as.numeric(df$ABETA)
+df$abeta_status <- ifelse(df$ABETA < 1025, 1, 0)
+
+# ptau > 24 T+
+df$PTAU <- as.numeric(df$PTAU)
+df$ptau_status <- ifelse(df$PTAU > 24, 1, 0)
+
+table(df$abeta_status)
+table(df$ptau_status)
+write.csv(df,file = "AB_enterC_KM_AT.csv")
+######################################################################
+
+######################################################################
+##abeta 
+################################################################################################
+###Abeta+
+data <- read.csv('AB_enterC_KM_A.csv',stringsAsFactors = T,check.names=FALSE)
+str(data)
+#data$staus <- factor(data$staus)
+#data$label_2 <- factor(data$label_2)
+library(survminer)
+library(survival)
+Surv(data$time,data$label)
+fit <- survfit(Surv(time, label) ~ abeta_status + state, data=data)
+fit
+ggsurvplot(fit, data = data,
+           break.time.by = 14,
+           conf.int = TRUE,
+           #risk.table = TRUE, 
+           # pval = TRUE, 
+           # pval.method = TRUE, 
+           conf.int.alpha = 0.2,
+           censor = FALSE,
+           fun = "pct", 
+           size = 0.8,  
+           linetype = c("solid", "solid","solid","longdash","longdash","longdash"),
+           palette = c("#f05b72", "#8975ca", "#ff7f00","#f05b72", "#8975ca","#ff7f00"), 
+           legend = c(0.10, 0.25), 
+           legend.title = "",
+           legend.labs = c("A-/stage A", "A-/All", 
+                           'A-/stage B', 'A+/stage A',
+                           'A+/All', 'A+/stage B'), 
+           title = "Participants with abeta status converting from either stages A or B to stage C",
+           font.main = c(16, "bold"),
+           xlab = "Time(Month)",
+           font.x = c(14, "bold"),
+           ylab = "Survival Probability", 
+           font.y = c(14, "bold"),
+           strip.text.x=element_text(size = 16, color = "black","bold"),
+           axis.line = element_line(size = .6, colour = "black"),
+           panel.border = element_rect(fill=NA,color="black", size=0.8, linetype="solid")
+          
+################################################################################################
+
+
+
+################################################################################################
+###ptau+
+data <- read.csv('AB_enterC_KM_T.csv',stringsAsFactors = T,check.names=FALSE)
+str(data)
+#data$staus <- factor(data$staus)
+#data$label_2 <- factor(data$label_2)
+library(survminer)
+library(survival)
+Surv(data$time,data$label)
+fit <- survfit(Surv(time, label) ~ ptau_status + state, data=data)
+fit
+ggsurvplot(fit, data = data,
+           break.time.by = 14, 
+           conf.int = TRUE, 
+           #risk.table = TRUE, 
+           # pval = TRUE, 
+           # pval.method = TRUE, 
+           conf.int.alpha = 0.2,
+           censor = FALSE,
+           fun = "pct",  
+           size = 0.8,  
+           linetype = c("solid", "solid","solid","longdash","longdash","longdash"), 
+           palette = c("#f05b72", "#8975ca", "#ff7f00","#f05b72", "#8975ca","#ff7f00"),
+           legend = c(0.10, 0.25), 
+           legend.title = "", 
+           legend.labs = c("T-/stage A", "T-/All", 
+                           'T-/stage B', 'T+/stage A',
+                           'T+/All', 'T+/stage B'), 
+           title = "Participants with ptau status converting from either stages A or B to stage C", 
+           font.main = c(16, "bold"), 
+           xlab = "Time(Month)",
+           font.x = c(14, "bold"),
+           ylab = "Survival Probability", 
+           font.y = c(14, "bold"),
+           strip.text.x=element_text(size = 16, color = "black","bold"),
+           axis.line = element_line(size = .6, colour = "black"),
+           panel.border = element_rect(fill=NA,color="black", size=0.8, linetype="solid")
+) 
+################################################################################################
+

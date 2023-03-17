@@ -1,0 +1,107 @@
+###############################################################
+###Survival curves of ADNI participants converting from any state to the final C-IV state (a) . 
+library(survival)
+library(survminer)
+library(KMunicate)
+library(ComparisonSurv)
+library(dplyr)
+data <- read.csv('clinical_data_enter_CIV.csv',stringsAsFactors = T,check.names=FALSE)
+str(data)
+#data$staus <- factor(data$staus)
+#data$label_2 <- factor(data$label_2)
+library(survminer)
+library(survival)
+Surv(data$time,data$label)
+
+
+fit <- survfit(Surv(time, label) ~  class, data=data)
+head(fit)
+ggsurvplot(fit, data = data,
+           break.time.by = 12, 
+           #conf.int = TRUE,
+           # risk.table = TRUE, 
+           pval = TRUE,
+           #pval.method = TRUE,
+           conf.int.alpha = 0.3, 
+           censor = FALSE,
+           fun = "pct", 
+           size = 0.8,  
+           linetype = c("solid",'solid','solid',"solid",'solid','solid',"solid","solid","solid"),  
+           palette = c("#659d91","#ffb90f","#9f79ee","#f08080","#00bfff", "#ff7f00","#bcee68","#ffaeb9","#8b8989","#659d91","#ffb90f","#9f79ee","#f08080","#00bfff", "#ff7f00","#bcee68","#ffaeb9","#8b8989"), 
+           legend = c(0.1, 0.4), 
+           legend.title = "", 
+           legend.labs = c("A-I","A-II","B-I","A-III","B-II","A-IV","C-I","C-II","C-III"), 
+            title = "Participants converting from any state to the final C-IV state", 
+           font.main = c(12, "bold"), 
+           xlab = "Time(Month)",
+           font.x = c(14, "bold"),
+           ylab = "Survival Probability", 
+           font.y = c(14, "bold"),
+           surv.median.line = "hv",
+            risk.table = T, 
+           tables.height = 0.3, 
+           fontsize = 4,
+           risk.table.title = "No. at Risk",
+            risk.table.y.text.col = FALSE,
+             tables.theme = theme_cleantable()
+) 
+with(data=data)
+pairwise.wilcox.test(x=data$label,g=data$class,p.adjust.method = "BH")
+###############################################################
+
+
+###############################################################
+###Survival curves of ADNI participants converting from any state to AD dementia (b). 
+library(survival)
+library(survminer)
+library(KMunicate)
+library(ComparisonSurv)
+library(dplyr)
+data <- read.csv('clinical_data_enter_dementia.csv',stringsAsFactors = T,check.names=FALSE)
+str(data)
+#data$staus <- factor(data$staus)
+#data$label_2 <- factor(data$label_2)
+library(survminer)
+library(survival)
+Surv(data$time,data$label)
+
+
+fit <- survfit(Surv(time, label) ~  class, data=data)
+head(fit)
+ggsurvplot(fit, data = data,
+           break.time.by = 12,
+           #conf.int = TRUE, 
+           # risk.table = TRUE, 
+           pval = TRUE,
+           #pval.method = TRUE, 
+           conf.int.alpha = 0.3, 
+           censor = FALSE,
+           fun = "pct", 
+           size = 0.8,  
+           linetype = c("solid",'solid','solid',"solid",'solid','solid',"solid","solid","solid","solid","solid"),  
+           palette = c("#659d91","#ffb90f","#9f79ee","#f08080","#00bfff", "#ff7f00","#bcee68","#ffaeb9","#8b8989","#9900FF","#993366","#659d91","#ffb90f","#9f79ee","#f08080","#00bfff", "#ff7f00","#bcee68","#ffaeb9","#8b8989","#9900FF","#993366"), 
+           legend = c(0.95, 0.4), 
+           legend.title = "", 
+           legend.labs = c("A-I","A-II","B-I","A-III","B-II","A-IV","C-I","C-II","C-III","C-IV"),
+           title = "Participants converting from any state to AD dementia", 
+           font.main = c(12, "bold"),
+           xlab = "Time(Month)", 
+           font.x = c(14, "bold"),
+           ylab = "Survival Probability", 
+           font.y = c(14, "bold"),
+           surv.median.line = "hv",
+           risk.table = T, 
+           tables.height = 0.3, 
+           fontsize = 4,
+           risk.table.title = "No. at Risk",
+           risk.table.y.text.col = FALSE,
+           tables.theme = theme_cleantable()
+) 
+with(data=data)
+pairwise.wilcox.test(x=data$label,g=data$class,p.adjust.method = "BH")
+###############################################################
+
+
+
+
+

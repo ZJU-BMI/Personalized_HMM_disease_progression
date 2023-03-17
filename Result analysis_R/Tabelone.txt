@@ -1,0 +1,31 @@
+df <- read.csv('state_clinical_10.csv')
+df <- na.omit(df)
+
+df$ABETA <- ifelse(df$ABETA == '>1700', 1700, df$ABETA)
+df$PTAU <- ifelse(df$PTAU == '<8', 8, df$PTAU)
+# abeta < 1025 A+
+df$ABETA <- as.numeric(df$ABETA)
+df$abeta_status <- ifelse(df$ABETA < 1025, 1, 0)
+
+# ptau > 24 T+
+df$PTAU <- as.numeric(df$PTAU)
+df$ptau_status <- ifelse(df$PTAU > 24, 1, 0)
+
+table(df$abeta_status)
+table(df$ptau_status)
+df
+write.csv(df, file = "state_clinical_AT.csv")
+
+library(tableone)
+library(survival)
+tableone_groups <- CreateTableOne(vars = c("AGE","PTEDUCAT","mps","ptau_status","label","abeta_status","gender","APOE4","CDRSB","ADAS11", "ADAS13","ADASQ4","MMSE", "RAVLT_immediate",
+                                           "RAVLT_learning","RAVLT_forgetting","RAVLT_perc_forgetting", "TRABSCOR","FAQ",
+                                           "Ventricles","Hippocampus","WholeBrain","Entorhinal","Fusiform","MidTemp","mPACCdigit",
+                                           "mPACCtrailsB", "ICV"),
+                                  strata = c("abeta_status","ptau_status"), #指定分组变量#若不指定则对总体分析做表#
+                                  data = df,
+                                  factorVars = c("gender","APOE4","mps"),#指定分类变量
+                                  addOverall = TRUE)
+print(tableone_groups)
+tab3Mat <- print(tableone_groups, quote = FALSE, noSpaces = TRUE, printToggle = FALSE)
+write.csv(tab3Mat, file = "state_clinical_10.csv")

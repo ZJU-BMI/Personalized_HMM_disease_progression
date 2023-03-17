@@ -1,0 +1,65 @@
+#install.packages("alluvial")
+library(alluvial)
+library(ggplot2)
+#install.packages("ggalluvial")
+library(ggalluvial)
+#install.packages("ggsci")
+library(ggsci)
+data3 <- read.csv('cntomci_river.csv',stringsAsFactors = T,check.names=FALSE)
+data3$Time <- factor(data3$Time)
+head(data3)
+
+P3 <- ggplot(data = data3,aes(x = Time, y = Percentage, alluvium = state)) +
+  theme_bw() +
+  scale_fill_brewer(type = "qual", palette = "Set3")+
+  geom_alluvium(aes(fill = state),alpha = .75, decreasing = FALSE, width = 1/2) +
+  geom_stratum(aes(stratum = state,fill = state), decreasing = FALSE, width = 1/2)
+P3
+
+
+P3s <- ggplot(data = data3,aes(x = Time, y = Percentage, alluvium = state)) +
+  theme_bw() +
+  scale_fill_brewer(type = "qual", palette = "Set3")+
+  geom_alluvium(aes(fill = state),alpha = .75, decreasing = NA, width = 1/2) +
+  geom_stratum(aes(stratum = state,fill = state), decreasing = NA, width = 1/2)
+P3s
+
+ºÓÁ÷Í¼1111
+#install.packages("alluvial")
+library(alluvial)
+library(ggplot2)
+#install.packages("ggalluvial")
+library(ggalluvial)
+#install.packages("ggsci")
+library(ggsci)
+data3 <- read.csv('cntomci_river.csv',stringsAsFactors = T,check.names=FALSE)
+data3$Time <- factor(data3$Time)
+head(data3)
+
+P3 <- ggplot(data = data3,aes(x = Time, y = Percentage, alluvium = state)) +
+  theme_bw() +
+  scale_fill_brewer(type = "qual", palette = "Set3")+
+  geom_alluvium(aes(fill = state),alpha = .75, decreasing = FALSE, width = 1/2) +
+  geom_stratum(aes(stratum = state,fill = state), decreasing = FALSE, width = 1/2)
+P3
+
+
+P3s <- ggplot(data = data3,aes(x = Time, y = Percentage, alluvium = state)) +
+  theme_bw() +
+  scale_fill_brewer(type = "qual", palette = "Set3")+
+  geom_alluvium(aes(fill = state),alpha = .75, decreasing = NA, width = 1/2) +
+  geom_stratum(aes(stratum = state,fill = state), decreasing = NA, width = 1/2)+
+  theme(axis.text.x = element_text(size = 18, color = "black"))+
+  theme(axis.text.y = element_text(size = 18, color = "black"))+
+  theme(axis.title.x = element_text(size = 18, color = "black"))+
+  theme(axis.title.y = element_text(size = 18, color = "black"))+
+  theme(legend.text =element_text(size =14))
+P3s
+
+
+P3s <- ggplot(data = data3,aes(x = Time, y = Percentage, alluvium = state)) +
+  theme_bw() +
+  scale_fill_brewer(type = "qual", palette = "Set3")+
+  geom_alluvium(aes(fill = state),alpha = .75, decreasing = NA, width = 2) +
+  geom_stratum(aes(stratum = state,fill = state), decreasing = NA, width = 2) 
+P3s

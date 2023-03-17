@@ -1,0 +1,27 @@
+library(circlize)
+data1 <- read.delim('clipboard', row.names = 1, sep = '\t', 
+                    stringsAsFactors = FALSE, check.names = FALSE)
+
+data1 <- as.matrix(data1)
+data1
+
+grid.col = c(AI='#90EE90',AII='#969897',AIII="#f283bd",AIV="#a4551b",
+             BI='#fbfb43',BII='#fb7c19',
+             CI="#9f4ca3",CII="#40b33d",CIII="#3681b5",CIV="#FF0000",
+             CN='#fac38a',MCI= '#76cd81',Dementia= "#c2adda") 
+
+col = c(AI='#90EE90',AII='#969897',AIII="#f283bd",AIV="#a4551b",
+        BI='#fbfb43',BII='#fb7c19',
+        CI="#9f4ca3",CII="#40b33d",CIII="#3681b5",CIV="#FF0000")
+
+circos.clear()
+circos.par(start.degree = 360, clock.wise = TRUE)
+par(cex = 1.5, font=1,mar = c(0.5, 0.5,0.5, 0.5))
+chordDiagram(data1, 
+             grid.col = grid.col, 
+             row.col = col,
+             directional = -1,
+             transparency = 0.4,   
+             annotationTrackHeight = c(0.04, 0.03)
+)
+
